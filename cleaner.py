@@ -2,35 +2,54 @@
 import json
 import os
 import requests
-from glob import glob
 
 #Define o arquivo de configuração
 configfile = 'cfg'
-ckey = requests.get('')
+configpath = os.path.join(os.getcwd(), f'{configfile}.ini')
+logpath = os.path.join(os.getcwd(), f'log.txt')
 
-if os.path.exists(os.path.join(os.getcwd(), f'{configfile}.ini')):
-    with open(os.path.join(os.getcwd(), f'{configfile}.ini'), 'r') as cfg:
+try:
+    ckey = requests.get('https://raw.githubusercontent.com/LuGB18/AutoCleanerPy/main/clperm.key')
+    ckey.raise_for_status()
+    ckey = json.load(ckey.content())
+except requests.exceptions.RequestException:
+    with open(logpath, 'w') as log:
+                log.write(f'''
+                                An unexpected error has occured.
+                                Please ensure you have a conection with the internet.                
+                                ''')
+                exit()
+
+
+if os.path.exists(configpath):
+    with open(configpath, 'r') as cfg:
         try:
             config = json.loads(cfg.read())
         except json.decoder.JSONDecodeError:
-            with open(os.path.join(os.getcwd(), f'log.txt'), 'w') as log:
+            with open(logpath, 'w') as log:
                 log.write(f'''
                                 An unexpected error has occured.
                                 Please re-enter your key on the "{configfile}.ini" file and re-open the program.                
                                 ''')
-                log.close()
                 exit()
         except Exception as e:
-            with open(os.path.join(os.getcwd(), f'log.txt'), 'w') as log:
+            with open(logpath, 'w') as log:
                 log.write(f'''
                             An unexpected error has occured.
                             Please contact the Repo Owner to advise of the error.
                             Error:{e}                   
                             ''')
-                log.close()
                 exit()
-        cfg.close()
+        
 else:
-    with open(os.path.join(os.getcwd(), f'{configfile}.ini'), 'w') as cfg:
+    with open(configpath, 'w') as cfg:
         cfg.write(json.dumps([{'key': ''}], indent=4))
-        cfg.close()
+        
+if not config['key'] == ckey['key']:
+     with open(logpath, 'w') as log:
+                log.write(f'''
+                            An unexpected error has occured.
+                            Please ensure you key is valid.
+                            Error:{e}                   
+                            ''')
+                exit()
