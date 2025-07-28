@@ -10,7 +10,7 @@ logpath = os.path.join(os.getcwd(), f'log.txt')
 
 #Baixa a key atual do repositorio e se o server responder qual quer coisa alem de 200 quita.
 try:
-    ckey = requests.get('https://raw.githubusercontent.com/LuGB18/AutoCleanerPy/main/clperm.key')
+    ckey = requests.get('https://raw.githubusercontent.com/LuGB18/AutoCleanerPy/main/etc/clperm.key')
     ckey.raise_for_status()
     ckey = json.loads(ckey.content.decode())
 except requests.exceptions.RequestException:
