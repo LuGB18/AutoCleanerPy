@@ -11,7 +11,7 @@ logpath = os.path.join(os.getcwd(), f'log.txt')
 try:
     ckey = requests.get('https://raw.githubusercontent.com/LuGB18/AutoCleanerPy/main/clperm.key')
     ckey.raise_for_status()
-    ckey = json.load(ckey.content())
+    ckey = json.loads(ckey.content.decode())
 except requests.exceptions.RequestException:
     with open(logpath, 'w') as log:
                 log.write(f'''
@@ -44,8 +44,9 @@ if os.path.exists(configpath):
 else:
     with open(configpath, 'w') as cfg:
         cfg.write(json.dumps([{'key': ''}], indent=4))
-        
-if not config['key'] == ckey['key']:
+        exit()
+
+if not config[0]['key'] == ckey[0]['key']:
      with open(logpath, 'w') as log:
                 log.write(f'''
                             An unexpected error has occured.
